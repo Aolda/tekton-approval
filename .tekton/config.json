@@ -1,6 +1,6 @@
 {
   "project": "aolda",
-  "image": "tekton/approval/front",
+  "image": "tekton/approval/frontend",
   "dockerfile": ".deploy/Dockerfile",
   "context": "./",
   "platform": "linux/amd64",
