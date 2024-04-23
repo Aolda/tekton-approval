@@ -63,3 +63,12 @@ example
 ```json
 "replicas": 2
 ```
+
+### port
+
+pod에 접근할 수 있는 포트 번호
+
+example
+```json
+"port": 3000
+```
