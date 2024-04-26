@@ -30,12 +30,19 @@ export default function Page() {
     router.push('/');
   };
 
+  const displayResult = (res: string) => {
+    setResult(res);
+    setTimeout(() => setResult(''), 3000);
+  };
+
   const handleApprove = () => {
-    fetchApprove(path, worker, message).then((res) => setResult(res));
+    setMessage('');
+    fetchApprove(path, worker, message).then((res) => displayResult(res));
   };
 
   const handleDeny = () => {
-    fetchDeny(path, worker, message).then((res) => setResult(res));
+    setMessage('');
+    fetchDeny(path, worker, message).then((res) => displayResult(res));
   };
 
   useEffect(() => {
@@ -54,15 +61,11 @@ export default function Page() {
         <h1 className="text-3xl font-semibold mb-8 text-black">
           Approve / Deny
         </h1>
-        <div className="bg-white border border-gray-200 rounded-md shadow-md p-4 mb-4 flex flex-col gap-4">
-          <h2 className="text-xl font-semibold mb-2 text-black">
+        <div className="bg-white border border-gray-200 rounded-md shadow-md p-4 mb-4 flex flex-col gap-8">
+          <h2 className="text-xl font-semibold text-black">
             {pipelineRun?.pipelineRun}
           </h2>
-          <Link
-            href={commitUrl}
-            target={'_blank'}
-            className="text-blue-400 mb-2"
-          >
+          <Link href={commitUrl} target={'_blank'} className="text-blue-400">
             {pipelineRun?.commitMessage}
           </Link>
           <div className="flex items-center">
@@ -75,33 +78,31 @@ export default function Page() {
             </div>
             <p className="ml-4 text-lg font-semibold text-black">{worker}</p>
           </div>
-          <div className={'flex flex-col gap-1'}>
-            <p className="text-gray-500 mb-2">
-              Project: {pipelineRun?.project}
-            </p>
-            <p className="text-gray-500 mb-2">Tag: {pipelineRun?.tag}</p>
-            <p className="text-gray-500 mb-2">Image: {pipelineRun?.image}</p>
-            <p className="text-gray-500 mb-2">
+          <div className={'flex flex-col gap-3'}>
+            <p className="text-gray-500">Project: {pipelineRun?.project}</p>
+            <p className="text-gray-500">Tag: {pipelineRun?.tag}</p>
+            <p className="text-gray-500">Image: {pipelineRun?.image}</p>
+            <p className="text-gray-500">
               Repository URL:{' '}
               <Link
                 href={repositoryUrl}
                 target={'_blank'}
-                className="text-blue-400 mb-2"
+                className="text-blue-400"
               >
                 {pipelineRun?.applicationRepositoryUrl}
               </Link>
             </p>
           </div>
         </div>
-
         <input
           type="text"
           placeholder="Leave a message"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
-          className="border border-gray-300 rounded px-4 py-2 mb-4 text-black"
+          className="border border-gray-300 rounded px-4 py-2 mb-2 text-black"
         />
-        <div className="flex space-x-4">
+        <p className="text-gray-500 mb-2">{result}</p>
+        <div className="flex space-x-4 mb-4">
           <button
             className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
             onClick={handleApprove}
@@ -116,7 +117,6 @@ export default function Page() {
           </button>
         </div>
       </div>
-      <p className={'text-3xl font-semibold mb-8'}>{result}</p>
     </main>
   );
 }
