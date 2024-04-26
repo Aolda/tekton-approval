@@ -6,9 +6,9 @@ export type PipelineRuns = {
     workerGithub: string,
     workerIcon: string,
     tag: string,
-    Image: string,
-    Project: string,
-    RepositoryUrl: string
+    image: string,
+    project: string,
+    applicationRepositoryUrl: string
 };
 
 export default PipelineRuns;
