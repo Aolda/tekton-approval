@@ -51,9 +51,9 @@ export default function Page() {
 
   return (
     <main className="flex h-screen flex-col items-center justify-between p-24">
-      <div className="flex flex-col items-center justify-center h-full">
+      <div className="flex flex-col items-center justify-center h-full w-2/5">
         <button
-          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 self-start"
+          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 self-start mb-4"
           onClick={handleBack}
         >
           Back
@@ -61,7 +61,7 @@ export default function Page() {
         <h1 className="text-3xl font-semibold mb-8 text-black">
           Approve / Deny
         </h1>
-        <div className="bg-white border border-gray-200 rounded-md shadow-md p-4 mb-4 flex flex-col gap-8">
+        <div className="bg-white border border-gray-200 rounded-md shadow-md p-4 mb-4 flex flex-col gap-8 w-full">
           <h2 className="text-xl font-semibold text-black">
             {pipelineRun?.pipelineRun}
           </h2>
@@ -83,13 +83,12 @@ export default function Page() {
             <p className="text-gray-500">Tag: {pipelineRun?.tag}</p>
             <p className="text-gray-500">Image: {pipelineRun?.image}</p>
             <p className="text-gray-500">
-              Repository URL:{' '}
               <Link
                 href={repositoryUrl}
                 target={'_blank'}
                 className="text-blue-400"
               >
-                {pipelineRun?.applicationRepositoryUrl}
+                Repository
               </Link>
             </p>
           </div>
