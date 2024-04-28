@@ -11,6 +11,7 @@ export default function Document() {
           key="desc"
         />
       </Head>
+      <link rel="icon" href="/favicon.png" sizes="any" />
       <meta property="og:title" content={'[Aolda] Tekton Approval'} />
       <meta property="og:description" content={'Tekton Approval in Aolda'} />
       <meta property="og:type" content="website" />
