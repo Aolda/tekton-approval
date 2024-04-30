@@ -5,9 +5,6 @@ RUN npm install
 COPY . .
 RUN npm run build
 
-FROM docker.io/library/nginx:1.24.0-alpine as production
-COPY --from=build /workspace/out /usr/share/nginx/html
-COPY .nginx/nginx.conf /etc/nginx/templates/default.conf.template
-CMD /docker-entrypoint.d/20-envsubst-on-templates.sh && \
-    nginx -g 'daemon off;'
+RUN npm install pm2 -g
+CMD ["pm2-runtime", "start", "npm", "--", "start", "--", "--port", "80"]
 EXPOSE 80
