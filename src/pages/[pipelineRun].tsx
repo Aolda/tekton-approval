@@ -1,15 +1,14 @@
 import { fetchApprove, fetchDeny, fetchPipelineRun } from '@/api/pipelineRuns';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import PipelineRuns from '../../types/PipelineRuns';
+import { GetServerSidePropsContext } from 'next';
 
-export default function Page() {
+export default function Page(pipelineRun: PipelineRuns) {
   const [message, setMessage] = useState('');
   const [result, setResult] = useState('');
-  const [pipelineRun, setPipelineRun] = useState<PipelineRuns>();
   const router = useRouter();
-  const path = router.asPath.replace('/', '');
 
   const worker = useMemo(
     () => pipelineRun?.workerGithub || '',
@@ -37,17 +36,17 @@ export default function Page() {
 
   const handleApprove = () => {
     setMessage('');
-    fetchApprove(path, worker, message).then((res) => displayResult(res));
+    fetchApprove(pipelineRun.pipelineRun, worker, message).then((res) =>
+      displayResult(res)
+    );
   };
 
   const handleDeny = () => {
     setMessage('');
-    fetchDeny(path, worker, message).then((res) => displayResult(res));
+    fetchDeny(pipelineRun.pipelineRun, worker, message).then((res) =>
+      displayResult(res)
+    );
   };
-
-  useEffect(() => {
-    fetchPipelineRun(path).then((res) => setPipelineRun(res));
-  }, []);
 
   return (
     <main className="flex h-screen flex-col items-center justify-between p-24">
@@ -118,4 +117,10 @@ export default function Page() {
       </div>
     </main>
   );
+}
+
+export async function getServerSideProps(ctx: GetServerSidePropsContext) {
+  const path = ctx.resolvedUrl.replace('/', '') || '';
+  const data = await fetchPipelineRun(path);
+  return { props: data };
 }
