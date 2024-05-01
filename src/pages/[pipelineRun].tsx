@@ -50,7 +50,7 @@ export default function Page(pipelineRun: PipelineRuns) {
 
   return (
     <main className="flex h-screen flex-col items-center justify-between lg:p-24 p-4">
-      <div className="flex flex-col items-center justify-center h-full">
+      <div className="flex flex-col items-center justify-center h-full w-full max-w-2xl">
         <button
           className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 self-start mb-4"
           onClick={handleBack}
@@ -64,7 +64,11 @@ export default function Page(pipelineRun: PipelineRuns) {
           <h2 className="text-xl font-semibold text-black">
             {pipelineRun?.pipelineRun}
           </h2>
-          <Link href={commitUrl} target={'_blank'} className="text-blue-400">
+          <Link
+            href={commitUrl}
+            target={'_blank'}
+            className="text-blue-400 hover:underline"
+          >
             {pipelineRun?.commitMessage}
           </Link>
           <div className="flex items-center">
@@ -85,7 +89,7 @@ export default function Page(pipelineRun: PipelineRuns) {
               <Link
                 href={repositoryUrl}
                 target={'_blank'}
-                className="text-blue-400"
+                className="text-blue-400 hover:underline"
               >
                 Repository
               </Link>
