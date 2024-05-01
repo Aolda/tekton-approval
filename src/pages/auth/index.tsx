@@ -1,7 +1,7 @@
 export default function Page() {
   return (
     <main className="flex h-screen flex-col items-center justify-between lg:p-24 p-4">
-      <h1 className={'text-2xl text-black'}>redirect..</h1>
+      <h1 className={'text-2xl text-black'}>redirect...</h1>
     </main>
   );
 }
