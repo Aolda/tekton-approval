@@ -3,14 +3,7 @@ import { Html, Head, Main, NextScript } from 'next/document';
 export default function Document() {
   return (
     <Html lang="en">
-      <Head>
-        <title>[Aolda] Tekton Approval</title>
-        <meta
-          name="description"
-          content="Tekton Approval in Aolda"
-          key="desc"
-        />
-      </Head>
+      <Head />
       <link rel="icon" href="/favicon.png" sizes="any" />
       <meta property="og:title" content={'[Aolda] Tekton Approval'} />
       <meta property="og:description" content={'Tekton Approval in Aolda'} />

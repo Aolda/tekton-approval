@@ -1,15 +1,19 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { fetchPipelineRuns } from '@/api/pipelineRuns';
+import {
+  fetchPipelineRun,
+  fetchPipelineRuns,
+  fetchPipelineRunsByName,
+} from '@/api/pipelineRuns';
 import PipelineRuns from '../../types/PipelineRuns';
+import { GetServerSidePropsContext } from 'next';
+import { getUserNameByCode } from '@/api/auth';
 
-export default function Home() {
-  const [pipelineRuns, setPipelineRuns] = useState<PipelineRuns[]>([]);
+interface Props {
+  pipelineRuns: PipelineRuns[];
+}
 
-  useEffect(() => {
-    fetchPipelineRuns().then((res) => setPipelineRuns(res));
-  }, []);
-
+export default function Home({ pipelineRuns }: Props) {
   return (
     <main className="flex min-h-screen flex-col items-center justify-between lg:p-24 p-4">
       <h1 className="lg:text-3xl text-2xl font-semibold my-8 text-black">
@@ -47,4 +51,25 @@ export default function Home() {
       </ul>
     </main>
   );
+}
+
+export async function getServerSideProps(ctx: GetServerSidePropsContext) {
+  const { req } = ctx;
+  const { url } = req;
+  const urlParams = new URLSearchParams(url);
+  const code = urlParams.get('code');
+  let name = '';
+
+  if (code) {
+    name = await getUserNameByCode(code).then((res) => res.userName);
+  } else {
+    const redirectUri = process.env.KEYCLOAK_API_URI;
+    ctx.res.writeHead(302, {
+      Location: redirectUri,
+    });
+    ctx.res.end();
+  }
+
+  const pipelineRuns = await fetchPipelineRunsByName(name);
+  return { props: { pipelineRuns } };
 }
