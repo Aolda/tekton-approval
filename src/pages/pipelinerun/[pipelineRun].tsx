@@ -1,9 +1,15 @@
-import { fetchApprove, fetchDeny, fetchPipelineRun } from '@/api/pipelineRuns';
-import { useMemo, useState } from 'react';
+import {
+  fetchApprove,
+  fetchDeny,
+  fetchPipelineRun,
+  fetchPipelineRunsByName,
+} from '@/api/pipelineRuns';
+import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import PipelineRuns from '../../types/PipelineRuns';
+import PipelineRuns from '../../../types/PipelineRuns';
 import { GetServerSidePropsContext } from 'next';
+import { getUserInfo } from '@/api/auth';
 
 export default function Page(pipelineRun: PipelineRuns) {
   const [message, setMessage] = useState('');
@@ -124,7 +130,40 @@ export default function Page(pipelineRun: PipelineRuns) {
 }
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
-  const path = ctx.resolvedUrl.replace('/', '') || '';
-  const data = await fetchPipelineRun(path);
-  return { props: data };
+  const token = ctx.req.cookies.token || '';
+  let name = '';
+  let pipelineRuns: PipelineRuns[] = [];
+
+  const redirect = () => {
+    const redirectUri = process.env.KEYCLOAK_API_URI;
+    ctx.res.setHeader('Set-Cookie', 'token=deleted; Max-Age=0;');
+    ctx.res.writeHead(302, {
+      Location: redirectUri,
+    });
+    ctx.res.end();
+  };
+
+  const isAuthorizedFetch = async () => {
+    const pipelineRun = pipelineRuns.find(
+      (pipelineRun) => pipelineRun.pipelineRun === path
+    );
+
+    return pipelineRun ? await fetchPipelineRun(path).then((res) => res) : {};
+  };
+
+  if (!token) {
+    redirect();
+  } else {
+    const res = await getUserInfo(token).then((res) => res);
+    if (res.status === 401) {
+      redirect();
+    } else if (res.status === 200) {
+      name = res.data.preferred_username;
+      pipelineRuns = await fetchPipelineRunsByName(name);
+    }
+  }
+  const path =
+    ctx.resolvedUrl.replace('/', '').replace('pipelinerun/', '') || '';
+  const pipelineRun = await isAuthorizedFetch();
+  return { props: pipelineRun };
 }
