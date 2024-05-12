@@ -1,13 +1,8 @@
-import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import {
-  fetchPipelineRun,
-  fetchPipelineRuns,
-  fetchPipelineRunsByName,
-} from '@/api/pipelineRuns';
+import { fetchPipelineRunsByName } from '@/api/pipelineRuns';
 import PipelineRuns from '../../types/PipelineRuns';
 import { GetServerSidePropsContext } from 'next';
-import { getUserNameByCode } from '@/api/auth';
+import { getToken, getUserInfo } from '@/api/auth';
 
 interface Props {
   pipelineRuns: PipelineRuns[];
@@ -26,7 +21,7 @@ export default function Home({ pipelineRuns }: Props) {
             className="bg-white hover:bg-gray-100 border border-gray-200 rounded-md shadow-md md:aspect-video sm:aspect-square flex"
           >
             <Link
-              href={`/${run.pipelineRun}`}
+              href={`/pipelinerun/${run.pipelineRun}`}
               className={'w-full h-full flex flex-col justify-between p-4'}
             >
               <h2 className="lg:text-xl text-sm font-semibold mb-2 text-black">
@@ -54,22 +49,30 @@ export default function Home({ pipelineRuns }: Props) {
 }
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
-  const { req } = ctx;
-  const { url } = req;
-  const urlParams = new URLSearchParams(url);
-  const code = urlParams.get('code');
+  const token = ctx.req.cookies.token || '';
   let name = '';
+  let pipelineRuns: PipelineRuns[] = [];
 
-  if (code) {
-    name = await getUserNameByCode(code).then((res) => res.userName);
-  } else {
+  const redirect = () => {
     const redirectUri = process.env.KEYCLOAK_API_URI;
+    ctx.res.setHeader('Set-Cookie', 'token=deleted; Max-Age=0;');
     ctx.res.writeHead(302, {
       Location: redirectUri,
     });
     ctx.res.end();
+  };
+
+  if (!token) {
+    redirect();
+  } else {
+    const res = await getUserInfo(token).then((res) => res);
+    if (res.status === 401) {
+      redirect();
+    } else if (res.status === 200) {
+      name = res.data.preferred_username;
+      pipelineRuns = await fetchPipelineRunsByName(name);
+    }
   }
 
-  const pipelineRuns = await fetchPipelineRunsByName(name);
   return { props: { pipelineRuns } };
 }
