@@ -2,7 +2,7 @@ import axios from 'axios';
 
 export const getToken = async (code: string) => {
   return await axios
-    .post(`http://localhost:8000/auth/token`, {
+    .post(`${process.env.NEXT_PUBLIC_AUTH_API_ENDPOINT}/auth/token`, {
       code: code,
       grant_type: 'authorization_code',
       clientId: process.env.KEYCLOAK_CLIENT_ID,
@@ -16,7 +16,7 @@ export const getToken = async (code: string) => {
 
 export const getUserInfo = async (token: string) => {
   return await axios
-    .get(`http://localhost:8000/auth/userinfo`, {
+    .get(`${process.env.NEXT_PUBLIC_AUTH_API_ENDPOINT}/auth/userinfo`, {
       headers: {
         Authorization: token,
       },
