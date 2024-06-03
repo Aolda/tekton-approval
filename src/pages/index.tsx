@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { fetchPipelineRunsByName } from '@/api/pipelineRuns';
 import PipelineRuns from '../../types/PipelineRuns';
 import { GetServerSidePropsContext } from 'next';
-import { getToken, getUserInfo } from '@/api/auth';
+import { getUserInfo } from '@/api/auth';
 
 interface Props {
   pipelineRuns: PipelineRuns[];

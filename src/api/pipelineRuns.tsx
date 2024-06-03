@@ -10,12 +10,9 @@ axios.defaults.paramsSerializer = (params) => {
 
 export const fetchPipelineRunsByName = async (name: string) => {
   const params = { params: { worker: name } };
-
   try {
     return await axios
-      .get<
-        PipelineRuns[]
-      >(`${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/pipelineRuns`, params)
+      .get<PipelineRuns[]>(`/api/pipelineRuns`, params)
       .then((res) => res.data.reverse());
   } catch (error) {
     console.error('Error fetching pipelineRuns:', error);
