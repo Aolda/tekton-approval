@@ -23,9 +23,7 @@ export const fetchPipelineRunsByName = async (name: string) => {
 export const fetchPipelineRun = async (pipelineRun: string) => {
   try {
     return await axios
-      .get<PipelineRuns>(
-        `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/pipelineRuns/${pipelineRun}`
-      )
+      .get<PipelineRuns>(`/api/pipelineRuns/${pipelineRun}`)
       .then((res) => res.data);
   } catch (error) {
     console.error('Error fetching pipelineRun:', error);
@@ -44,10 +42,7 @@ export const fetchApprove = async (
 
   try {
     return await axios
-      .post<ResApproveDeny>(
-        `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/approve/${pipelineRun}`,
-        req
-      )
+      .post<ResApproveDeny>(`/api/approve/${pipelineRun}`, req)
       .then((res) => res.data.result);
   } catch (error) {
     console.error('Error fetching approve:', error);
