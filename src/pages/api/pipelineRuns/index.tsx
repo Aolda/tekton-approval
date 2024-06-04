@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import dbConnect from '../../../lib/db/dbConnect';
-import PipelineRuns from '../../../types/PipelineRuns';
-import pipelineRuns from '../../../lib/db/models/pipelineRuns';
+import dbConnect from '../../../../lib/db/dbConnect';
+import PipelineRuns from '../../../../types/PipelineRuns';
+import pipelineRuns from '../../../../lib/db/models/pipelineRuns';
 
 type ResponseData = {
   data?: PipelineRuns[];

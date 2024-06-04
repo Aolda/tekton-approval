@@ -9,29 +9,19 @@ type ResponseData = {
 };
 
 type Filter = {
-  workerGithub?: string;
-  project?: string;
-  image?: string;
+  pipelineRun?: string;
 };
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<ResponseData>
 ) {
-  const { query } = req;
+  const { pipelineRun } = req.query;
 
   let filter: Filter = {};
 
-  if (query.worker) {
-    filter.workerGithub = query.workerGithub as string;
-  }
-
-  if (query.project) {
-    filter.project = query.project as string;
-  }
-
-  if (query.image) {
-    filter.image = query.image as string;
+  if (pipelineRun) {
+    filter.pipelineRun = pipelineRun as string;
   }
 
   try {
